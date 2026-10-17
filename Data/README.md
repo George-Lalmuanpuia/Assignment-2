@@ -20,3 +20,16 @@ Ensure your Python environment contains the following core packages:
 To completely reproduce the pipeline findings, execute the notebooks in this order:
 1. Run all cells in `data_processing.ipynb` to read raw data inputs, strip strings, match LGA names, and populate the `processed/` data folder.
 2. Run all cells in `eda.ipynb` to ingest the processed files, perform statistical tests, and export the horizontal/vertical graphics to `figures/`.
+
+### 3. Visualisation Charts
+Each script reads its input files from the folder we run it in, so copy the input files next to the script first, then run the command from that folder.
+
+*'Clustering Charts': Needs `lga_clusters.csv` and `kmeans_k_scores.csv
+To run we use python cluster_charts.py 
+It creates `chart_cluster_scatter.png`, `chart_cluster_profile.png` and `chart_cluster_silhouette.png`.
+
+*'Classification charts': Needs `logreg_test_predictions.csv` and `logreg_permutation_importance.csv`
+To run we use python classification_charts.py 
+It creates `chart_confusion_matrix.png`, `chart_class_metrics.png` and `chart_feature_importance.png`.
+
+
