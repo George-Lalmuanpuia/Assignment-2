@@ -43,6 +43,7 @@ Classification Charts: python3 classification_charts.py (Creates confusion matri
 Clustering Charts: python3 cluster_charts.py (Creates a PCA scatter plot, cluster profile bar chart, and silhouette score line chart).
 
 ## 2. Prediction Scripts (Testing the Models)
+
 To test the trained models, use the provided command-line scripts. Each script requires a .csv input file containing the necessary features. Run these commands from the root Assignment 2 folder.
 
 ### A. Crash Severity Prediction (predict.py)
@@ -59,43 +60,58 @@ Assigns LGA-year records to one of the 3 K-Means clusters based on crash pattern
 
 Command: python3 predict_cluster.py data/processed/lga_yearly_aggregates_clustering.csv
 
-The script then will be saved in `cluster_predictions.csv`. 
+Output: Saves cluster_predictions.csv to the data/processed/ folder.
 
-## 5. Classificatin Model (Random Forest(crash casualty.ipynb) and Logistic regression(logistic regression.ipynb))
+Required Columns: Crash rate per 100k, Severe %, Wet-weather %, Rural-road %.
 
-### Purpose
+### C. LGA High-Risk Prediction (predict_lga_risk.py)
+Predicts if an LGA will be high-risk based on its historical crash profile.
+
+Command: python3 predict_lga_risk.py data/processed/lga_yearly_aggregates_clustering.csv
+
+Output: Saves lga_risk_predictions.csv to the data/processed/ folder.
+
+Required Columns: Population, Severe %, Wet-weather %, Rural-road %.
+
+
+
+## 3. Model Details
+### Clustering Models (K-Means and DBSCAN)
+
+Purpose: Answers which NSW LGAs have similar road crash patterns (K-Means) and which LGA-year records are unusual (DBSCAN).
+
+Inputs: data/processed/lga_yearly_aggregates_clustering.csv.
+
+Features: Crash rate per 100k, Severe %, Wet-weather %, Rural-road %.
+
+Settings: random_state = 20, k = 3, eps = 1.0, min_samples = 5.
+
+Cluster Profiles:
+
+Cluster 0: Rural, highest casualty share, lowest wet-surface share.
+
+Cluster 1: Mostly non-rural, lowest crash rate.
+
+Cluster 2: Rural, highest wet-surface share, highest crash rate.
+
+### Classification Models (Random Forest and Logistic Regression)
+
+Purpose: Answers if environmental features predict an individual crash casualty (Random Forest) and if an LGA's past profile predicts future high-risk status (Logistic Regression).
+
+#### Crash Severity (crash_casualty.ipynb):
+
+Input: data/processed/nsw_crashes_classification.csv.
+
+Target: Severe_Crash (1 = casualty, 0 = non-casualty). Baseline accuracy is 67.93%.
+
+Settings: Stratified 80/20 split. class_weight = balanced. Random Forest uses 150 trees, max_depth = 10. Logistic Regression uses C = 1.
+
+#### LGA Risk (logistic regression.ipynb):
+
+Input: data/processed/lga_yearly_aggregates_clustering.csv.
+
+Settings: Time-based split (train 2020-2023, test 2024). StandardScaler + Logistic Regression. 5-fold GroupKFold cross-validation grouped by LGA.
+
 The cLassification models tries to answers these questions respectiviely:
 1. Can environmental and road-condition features predict whether an individual crash will be a casualty crash? (crash casualty.ipynb)
 2. Can an LGA's past crash profile based on crash rate, weather and road condition predict whether it will be a high-risk LGA in the following year? (logistic regression.ipynb)
-
-### Input
-### Crash casualty.ipynb
-Uses processed/nsw_crashes_classification.csv: one row per crash, 90,857 crashes from 2020 to 2024.
-Target Severe_Crash: 1 = casualty crash (someone was killed or injured), 0 = non-casualty towaway. 67.93% of crashes are 1, so always predicting 1 scores 67.93% accuracy. This is the baseline to beat.
-Features: Weather, Road classification (admin), Road surface, Surface condition, Urbanisation, Speed limit, Season and Population.
-Crash ID and LGA code are dropped because they are identifiers.
-### logistic regression.ipynb
-Uses processed/lga_yearly_aggregates_clustering.csv: 645 rows (129 LGAs x 5 years).
-Features: Population, Severe %, Wet-weather %, Rural-road %.
-
-### How to run it
-1.Run data_processing.ipynb first, so both input files exist in processed/.
-2. Open crash casualty.ipynb and logistic regression.ipynb and run all cells from top to bottom in each. The results are saved to processed/.
-### Settings
-Both: random_state = 20.
-### Crash casualty.ipynb
-Stratified 80/20 train/test split (72,685 training crashes, 18,172 test crashes).
-One-hot encoding inside the pipeline, with Speed limit treated as a category and Population standardised.
-class_weight = balanced for both models.
-Logistic Regression: C = 1. Random Forest: 150 trees, max_depth = 10, min_samples_leaf = 20. Both were chosen by grid search on the training data only.
-Decision threshold on P(non-casualty), chosen on training data by balanced accuracy: 0.51 (Logistic Regression) and 0.50 (Random Forest).
-### logistic regression.ipynb
-Time-based split: train on 2020 to 2023 (516 records), test on 2024 (129 records).
-StandardScaler + LogisticRegression (max_iter = 1000).
-5-fold GroupKFold cross-validation, grouped by LGA.
-
-### How to read the results
-### Crash casualty.ipynb
-results in test evaluation. Metric provided: Accuracy, Precision (NS), Recall (NS), F1 (NS), Balanced account, ROC-AUC,and PR-AUC (NS)
-### logistic regression.ipynb
-results provided in test evaluation Metric provided: Accuract, Precision, Recall, F1, dummy accuracy, Test ROC-AUC,and CV ROC-AUC
