@@ -46,7 +46,7 @@ Used `processed/lga_yearly_aggregates_clustering.csv` which as four features Cra
 1. Run `data_processing.ipynb` first, so the input file exists in `processed/`.
 2. Open `clustering-data.ipynb` and run all cells from top to bottom.The results are saved to `clusteringcsv/`, and the K-Means model is saved to `models/kmeans_lga.joblib`.
 
-## Settings
+### Settings
 random_state = 20, k = 3, eps = 1.0, min_samples = 5.
 
 ### How to read the results
