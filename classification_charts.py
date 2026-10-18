@@ -4,14 +4,14 @@ Draws the classification result charts.
 
 Input files:
   logreg_test_predictions.csv      - one row per test crash: y_true, y_pred, y_prob
-                                     (1 = Casualty, 0 = Non-casualty; y_prob = predicted chance of casualty)
+                                     (1 = high risk, 0 = low risk; y_prob = predicted chance of accident)
   logreg_permutation_importance.csv - feature, importance_mean, importance_std
 
 Charts created:
   chart_confusion_matrix.png         - counts and row percentages
   chart_class_metrics.png            - model vs "do nothing" baseline for each metric
   chart_roc_pr_curves.png            - ROC curve and precision-recall curve
-  chart_probability_distribution.png - predicted chance of Casualty, split by the true class
+  chart_probability_distribution.png - predicted chance of accident risk, split by the true class
   chart_feature_importance.png       - permutation importance of each feature
 
 To run:
@@ -32,10 +32,8 @@ from sklearn.metrics import (accuracy_score, balanced_accuracy_score, precision_
 PRED_FILE = "data/processed/logreg_test_predictions.csv"
 
 IMPORTANCE_FILE = "data/processed/logreg_permutation_importance.csv"
-
-CLASS_NAMES = {0: "Non-casualty", 1: "Casualty"}  # what 0 and 1 mean in y_true / y_pred
-POSITIVE = 0                                   # class treated as "positive" (Non-casualty)
-
+CLASS_NAMES = {0: "Low-risk", 1: "High-risk"}  # what 0 and 1 mean in y_true / y_pred
+POSITIVE = 0                                  
 
 def compute_metrics(y_true, y_pred, y_prob):
     # Use non-casualty as the positive class for these metrics
@@ -104,7 +102,7 @@ def metrics_chart(model, baseline):
     ax.set_xticks(x)
     ax.set_xticklabels(list(model.keys()))
     ax.set_ylim(0, 1.05)
-    ax.set_title("Logistic Regression: Crash Casualty Classification — Model vs Baseline")
+    ax.set_title("Logistic Regression: Accident Risk Classification — Model vs Baseline")
     ax.legend()
     save(fig, "chart_class_metrics.png")
 
@@ -118,7 +116,7 @@ def curves_chart(pos, score_pos):
     a1.plot([0, 1], [0, 1], "--", color="grey", label="Chance (AUC = 0.50)")
     a1.set_xlabel("False positive rate")
     a1.set_ylabel("True positive rate")
-    a1.set_title("Logistic Regression: ROC Curve (Casualty Classification)", fontsize=9)
+    a1.set_title("Logistic Regression: ROC Curve (Accident Risk Classification)", fontsize=9)
     a1.legend()
     a2.plot(rec[:-1], prec[:-1], label=f"Model (AP = {average_precision_score(pos, score_pos):.2f})")
     a2.axhline(pos.mean(), ls="--", color="grey", label=f"Chance (= {pos.mean():.2f})")
@@ -130,6 +128,7 @@ def curves_chart(pos, score_pos):
     save(fig, "chart_roc_pr_curves.png")
 
 
+
 def distribution_chart(y_true, y_prob):
     """Histogram of the predicted chance of Severe, split by the true class."""
     fig, ax = plt.subplots(figsize=(7, 4.5))
@@ -138,7 +137,7 @@ def distribution_chart(y_true, y_prob):
                 label=f"Actually {CLASS_NAMES[cls]}")
     ax.set_xlabel(f"Predicted chance of {CLASS_NAMES[1]}")
     ax.set_ylabel("Density")
-    ax.set_title("Logistic Regression: Predicted Casualty Probabilities")
+    ax.set_title("Logistic Regression: Predicted Risk Probabilities")
     ax.legend()
     save(fig, "chart_probability_distribution.png")
 
@@ -149,7 +148,7 @@ def importance_chart(path):
     fig, ax = plt.subplots(figsize=(7, 4.8))
     ax.barh(df["feature"], df["importance_mean"], color="#1f77b4")
     ax.set_xlabel("Drop in ROC-AUC when the feature is shuffled")
-    ax.set_title("Logistic Regression: Feature Importance for Crash Casualty Prediction", fontsize=9)
+    ax.set_title("Logistic Regression: Feature Importance for Accident Risk Prediction", fontsize=9)
     save(fig, "chart_feature_importance.png")
 
 
