@@ -61,3 +61,42 @@ This is only used for k-means prediction
 python predict_cluster.py processed/lga_yearly_aggregates_clustering.csv
 
 The script then will be saved in `cluster_predictions.csv`. 
+
+## 5. Classificatin Model (Random Forest(crash casualty.ipynb) and Logistic regression(logistic regression.ipynb))
+
+### Purpose
+The cLassification models tries to answers these questions respectiviely:
+1. Can environmental and road-condition features predict whether an individual crash will be a casualty crash? (crash casualty.ipynb)
+2. Can an LGA's past crash profile based on crash rate, weather and road condition predict whether it will be a high-risk LGA in the following year? (logistic regression.ipynb)
+
+### Input
+## Crash casualty.ipynb
+Uses processed/nsw_crashes_classification.csv: one row per crash, 90,857 crashes from 2020 to 2024.
+Target Severe_Crash: 1 = casualty crash (someone was killed or injured), 0 = non-casualty towaway. 67.93% of crashes are 1, so always predicting 1 scores 67.93% accuracy. This is the baseline to beat.
+Features: Weather, Road classification (admin), Road surface, Surface condition, Urbanisation, Speed limit, Season and Population.
+Crash ID and LGA code are dropped because they are identifiers.
+## logistic regression.ipynb
+Uses processed/lga_yearly_aggregates_clustering.csv: 645 rows (129 LGAs x 5 years).
+Features: Population, Severe %, Wet-weather %, Rural-road %.
+
+### How to run it
+1.Run data_processing.ipynb first, so both input files exist in processed/.
+2. Open crash casualty.ipynb and logistic regression.ipynb and run all cells from top to bottom in each. The results are saved to processed/.
+### Settings
+Both: random_state = 20.
+## Crash casualty.ipynb
+Stratified 80/20 train/test split (72,685 training crashes, 18,172 test crashes).
+One-hot encoding inside the pipeline, with Speed limit treated as a category and Population standardised.
+class_weight = balanced for both models.
+Logistic Regression: C = 1. Random Forest: 150 trees, max_depth = 10, min_samples_leaf = 20. Both were chosen by grid search on the training data only.
+Decision threshold on P(non-casualty), chosen on training data by balanced accuracy: 0.51 (Logistic Regression) and 0.50 (Random Forest).
+## logistic regression.ipynb
+Time-based split: train on 2020 to 2023 (516 records), test on 2024 (129 records).
+StandardScaler + LogisticRegression (max_iter = 1000).
+5-fold GroupKFold cross-validation, grouped by LGA.
+
+### How to read the results
+## Crash casualty.ipynb
+results in test evaluation. Metric provided: Accuracy, Precision (NS), Recall (NS), F1 (NS), Balanced account, ROC-AUC,and PR-AUC (NS)
+## logistic regression.ipynb
+results provided in test evaluation Metric provided: Accuract, Precision, Recall, F1, dummy accuracy, Test ROC-AUC,and CV ROC-AUC
