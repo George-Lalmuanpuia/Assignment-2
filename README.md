@@ -14,6 +14,7 @@ This repository contains the complete end-to-end machine learning pipeline for p
 *   `classification_charts.py`: Script to generate visualisations for the classification model.
 *   `cluster_charts.py`: Script to generate visualisations for the clustering model.
 
+Note: The data/processed/ folder contains the final training datasets, alongside the specific model output CSVs (like logreg_test_predictions.csv and lga_clusters.csv) required by the visualisation scripts. Running the notebooks and .py scripts from top to bottom will regenerate all of these files.
 ---
 
 ## 1. Setup & Execution Guide
@@ -72,8 +73,6 @@ Command: python3 predict_lga_risk.py data/processed/lga_yearly_aggregates_cluste
 Output: Saves lga_risk_predictions.csv to the data/processed/ folder.
 
 Required Columns: Population, Severe %, Wet-weather %, Rural-road %.
-
-
 
 ## 3. Model Details
 ### Clustering Models (K-Means and DBSCAN)
