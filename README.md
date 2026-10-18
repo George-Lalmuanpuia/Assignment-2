@@ -30,7 +30,7 @@ It creates `chart_cluster_scatter.png`, `chart_cluster_profile.png` and `chart_c
 
 *'Classification charts': Needs `logreg_test_predictions.csv` and `logreg_permutation_importance.csv`
 To run we use python classification_charts.py 
-It creates `chart_confusion_matrix.png`, `chart_class_metrics.png` and `chart_feature_importance.png`.
+It creates `chart_confusion_matrix.png`, `chart_class_metrics.png`,`chart_feature_importance.png`, `chart_probability_distribution`, `chart_roc_pr_curves`.
 
 ## 4. Clustering Model (K-Means and DBSCAN)
 
