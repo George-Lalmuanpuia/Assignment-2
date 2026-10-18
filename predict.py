@@ -6,7 +6,7 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 # Load model from the models/ folder
-bundle = joblib.load("models/crash_severity_model.joblib")
+bundle = joblib.load("models/crash_casualty_rf_model.joblib")
 
 # Read the new data
 df = pd.read_csv(sys.argv[1])
