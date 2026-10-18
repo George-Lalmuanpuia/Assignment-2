@@ -1,5 +1,0 @@
-Crash ID,Year of crash,Weather,Road classification (admin),Road surface,Surface condition,LGA,Urbanisation,Speed limit,LGA code,Population,Season,Severe_Crash,predicted_label,p_non_casualty
-1220987,2020,Fine,State,Sealed,Dry,Cootamundra-Gundagai,Country non-urban,110,12160,11393,Summer,1,Non-casualty,0.5505809455518341
-1220988,2020,Fine,State,Sealed,Dry,Clarence Valley,Country non-urban,100,11730,52893,Summer,1,Casualty,0.47558783215187894
-1221458,2020,Fine,State,Sealed,Dry,Upper Lachlan,Country non-urban,100,17640,8378,Summer,1,Casualty,0.4583304780824261
-1221459,2020,Fine,State,Sealed,Dry,Ryde,Sydney metro. area,60,16700,130999,Summer,1,Casualty,0.45264403586412993
